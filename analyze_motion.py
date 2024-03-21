@@ -49,16 +49,22 @@ print("High-motion frames (intensity):", intensity_high_motion_frames)
 print("*"*80)
 print()
 
+# Define a new threshold for change percentage, e.g., 5% of the frame has changed
+thresh_change_percent = 85  # This threshold is arbitrary; adjust as needed
+
 # Use a list to store the percentage of change for each pair of frames
 change_percentages = []
 for i in range(len(frames)-1):
     frame1 = cv2.imread(frames[i])
     frame2 = cv2.imread(frames[i+1])
     change_percentage = calculate_motion_percentage(frame1, frame2)
-    change_percentages.append(change_percentage)
+    is_significantly_different = change_percentage > thresh_change_percent
 
-# Define a new threshold for change percentage, e.g., 5% of the frame has changed
-thresh_change_percent = 5  # This threshold is arbitrary; adjust as needed
+    if is_significantly_different:
+        print(
+            f"Frame {i} -> Frame {i+1}: {change_percentage:.2f}% change, Different? {is_significantly_different}")
+
+    change_percentages.append(change_percentage)
 
 # Identify high-motion frames based on the percentage of change
 change_percent_high_motion_frames = [
